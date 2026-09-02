@@ -52,14 +52,14 @@ Resources:
       VpcId: !Ref VPC
       Tags:
       - Key: Name
-        Value: 'AWS in Action; ch 5'
+        Value: 'AWS in Action: chapter 5 (firewall)'
   InstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
       Roles:
       - !Ref InstanceRole
-  InstanceProfile:
-    Type:'AWS::IAM::Role'
+  InstanceRole:
+    Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -75,17 +75,17 @@ Resources:
     Properties:
       ImageId: !FindInMap [RegionMap, !Ref 'AWS::Region', AMI]
       InstanceType: 't3.micro'
-      IamInstanceProfile: !Ref InstanceProfile
+      IamInstanceProfile: !Ref InstanceProfile # instead of ec2-ssm-core we use a instance profile created in the same template for testability
       SecurityGroupIds:
       - !Ref SecurityGroup
-      SubnetIds: !Ref Subnet
+      SubnetId: !Ref Subnet
       Tags:
       - Key: Name
-        Value: 'AWS in Action: ch 5'
+        Value: 'AWS in Action: chapter 5 (firewall)'
       UserData:
         'Fn::Base64': !Sub |
           #!/bin/bash -ex
-          trap '/opt/aws/bin/cfn-signal -e 1 --stack ${AWS::StackName} --resource Instance --region ${AWS::Region}' ERR'
+          trap '/opt/aws/bin/cfn-signal -e 1 --stack ${AWS::StackName} --resource Instance --region ${AWS::Region}' ERR
           yum -y install httpd
           systemctl start httpd
           echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Hello AWS in Action!</title></head><body><p>Hello AWS in Action!</p></body></html>' > /var/www/html/index.html
