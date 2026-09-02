@@ -53,6 +53,17 @@ Resources:
       Tags:
       - Key: Name
         Value: 'AWS in Action: chapter 5 (firewall)'
+      SecurityGroupIngress:
+      - Description: 'allowing inbound ICMP traffic'
+        IpProtocol: icmp
+        FromPort: '-1'
+        ToPort: '-1'
+        CidrIp: '0.0.0.0/0'
+      - Description:
+        IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: '0.0.0.0/0'
   InstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
